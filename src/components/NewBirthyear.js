@@ -3,13 +3,19 @@ import { useMutation } from '@apollo/client'
 import { EDIT_BIRTHYEAR, ALL_AUTHORS } from '../queries'
 import ErrorNotification from './ErrorNotification'
 
-const NewBirthyear = (props) => {
+const NewBirthyear = ({ authors }) => {
   const [name, setName] = useState('')
   const [born, setBorn] = useState('')
   const [error, setError] = useState(null)
 
   const [ changeBirthyear, result ] = useMutation(EDIT_BIRTHYEAR, {
-    refetchQueries: [ { query: ALL_AUTHORS } ]
+    refetchQueries: [ { query: ALL_AUTHORS } ],
+    onError: (error) => {
+      setError(error.message)
+      setTimeout(() => {
+        setError(null)
+      }, 5000)
+    }
   })
 
   useEffect(() => {
@@ -20,10 +26,6 @@ const NewBirthyear = (props) => {
       }, 5000)
     }
   }, [result.data])
-
-  if (!props.show) {
-    return null
-  }
 
   const submit = async (event) => {
     event.preventDefault()
@@ -45,11 +47,12 @@ const NewBirthyear = (props) => {
       <ErrorNotification message={error} />
       <form onSubmit={submit}>
         <div>
-          name
-          <input
-            value={name}
-            onChange={({ target }) => setName(target.value)}
-          />
+          <select value={name} onChange={({ target }) => setName(target.value)}>
+            <option key='choose option' value=''>-- Please choose an option --</option>
+            {authors.map(author => (
+              <option key={author.name} value={author.name}>{author.name}</option>
+            ))}
+          </select>
         </div>
         <div>
           born
