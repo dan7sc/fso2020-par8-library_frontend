@@ -31,7 +31,7 @@ const App = () => {
         <button onClick={() => setPage('books')}>books</button>
         {token
          ? <span>
-             <button onClick={() => setPage('add')}>add</button>
+             <button onClick={() => setPage('add')}>add book</button>
              <button onClick={logout}>logout</button>
            </span>
          : <button onClick={() => setPage('login')}>login</button>
