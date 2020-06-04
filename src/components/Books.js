@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useQuery } from '@apollo/client'
 import { ALL_BOOKS} from '../queries'
 
-const Books = (props) => {
-  const [books, setBooks] = useState([])
+const Books = ({ show, books, setBooks }) => {
   const [genre, setGenre] = useState('all genres')
   const [topTenGenres, setTopTenGenres] = useState([])
   const result = useQuery(ALL_BOOKS)
@@ -15,7 +14,7 @@ const Books = (props) => {
         getTopTenGenres(result.data.allBooks)
       )
     }
-  }, [result])
+  }, [result, setBooks])
 
   const getTopTenGenres = (books) => {
     const allGenres = {}
@@ -41,7 +40,7 @@ const Books = (props) => {
     setGenre(genre)
   }
 
-  if (!props.show) {
+  if (!show) {
     return null
   }
 

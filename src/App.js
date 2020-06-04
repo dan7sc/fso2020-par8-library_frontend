@@ -4,10 +4,12 @@ import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
 import LoginForm from './components/LoginForm'
+import Recommends from './components/Recommends'
 
 const App = () => {
   const [page, setPage] = useState('authors')
   const [token, setToken] = useState(null)
+  const [books, setBooks] = useState([])
   const client = useApolloClient()
 
   useEffect(() => {
@@ -32,6 +34,7 @@ const App = () => {
         {token
          ? <span>
              <button onClick={() => setPage('add')}>add book</button>
+             <button onClick={() => setPage('recommend')}>recommend</button>
              <button onClick={logout}>logout</button>
            </span>
          : <button onClick={() => setPage('login')}>login</button>
@@ -45,10 +48,18 @@ const App = () => {
 
       <Books
         show={page === 'books'}
+        books={books}
+        setBooks={setBooks}
       />
 
       {token
-       ? <NewBook show={page === 'add'} />
+       ? <div>
+           <NewBook show={page === 'add'} />
+           <Recommends
+             show={page === 'recommend'}
+             books={books}
+           />
+         </div>
        : <LoginForm
            show={page === 'login'}
            setToken={setToken}
