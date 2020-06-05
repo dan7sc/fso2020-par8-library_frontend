@@ -9,12 +9,21 @@ const NewBirthyear = ({ authors }) => {
   const [error, setError] = useState(null)
 
   const [ changeBirthyear, result ] = useMutation(EDIT_BIRTHYEAR, {
-    refetchQueries: [ { query: ALL_AUTHORS } ],
     onError: (error) => {
       setError(error.message)
       setTimeout(() => {
         setError(null)
       }, 5000)
+    },
+    update: (store, response) => {
+      const dataInStore = store.readQuery({ query: ALL_AUTHORS })
+      store.writeQuery({
+        query: ALL_AUTHORS,
+        data: {
+          ...dataInStore,
+          allAuthors: [ ...dataInStore.allAuthors, response.data.editAuthor ]
+        }
+      })
     }
   })
 

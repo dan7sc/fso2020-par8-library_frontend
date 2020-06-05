@@ -57,7 +57,6 @@ const App = () => {
            <NewBook show={page === 'add'} />
            <Recommends
              show={page === 'recommend'}
-             books={books}
            />
          </div>
        : <LoginForm
