@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-import { useMutation } from '@apollo/client'
-import { CREATE_BOOK, ALL_AUTHORS, ALL_BOOKS } from '../queries'
+import { useMutation, useSubscription } from '@apollo/client'
+import { CREATE_BOOK, ALL_AUTHORS, ALL_BOOKS, BOOK_ADDED } from '../queries'
 import ErrorNotification from './ErrorNotification'
+import Notification from './Notification'
 
 const NewBook = (props) => {
   const [title, setTitle] = useState('')
@@ -10,6 +11,19 @@ const NewBook = (props) => {
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
   const [error, setError] = useState(null)
+  const [bookAdded, setBookAdded] = useState(null)
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      const title = subscriptionData.data.bookAdded.title
+      const author = subscriptionData.data.bookAdded.author.name
+      const message = `Book "${title}" from "${author}" added`
+      setBookAdded(message)
+      setTimeout(() => {
+        setBookAdded(null)
+      }, 5000)
+    }
+  })
 
   const [ createBook ] = useMutation(CREATE_BOOK, {
     onError: (error) => {
@@ -69,6 +83,7 @@ const NewBook = (props) => {
   return (
     <div>
       <ErrorNotification message={error} />
+      <Notification message={bookAdded} />
       <form onSubmit={submit}>
         <div>
           title
