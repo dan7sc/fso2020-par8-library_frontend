@@ -54,7 +54,10 @@ const App = () => {
 
       {token
        ? <div>
-           <NewBook show={page === 'add'} />
+           <NewBook
+             show={page === 'add'}
+             client={client}
+           />
            <Recommends
              show={page === 'recommend'}
            />

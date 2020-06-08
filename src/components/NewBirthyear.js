@@ -16,7 +16,9 @@ const NewBirthyear = ({ authors }) => {
       }, 5000)
     },
     update: (store, response) => {
-      const dataInStore = store.readQuery({ query: ALL_AUTHORS })
+      const dataInStore = store.readQuery({
+        query: ALL_AUTHORS
+      })
       store.writeQuery({
         query: ALL_AUTHORS,
         data: {
@@ -57,9 +59,13 @@ const NewBirthyear = ({ authors }) => {
       <form onSubmit={submit}>
         <div>
           <select value={name} onChange={({ target }) => setName(target.value)}>
-            <option key='choose option' value=''>-- Please choose an option --</option>
+            <option key='choose option' value=''>
+              -- Please choose an option --
+            </option>
             {authors.map(author => (
-              <option key={author.name} value={author.name}>{author.name}</option>
+              <option key={author.name} value={author.name}>
+                {author.name}
+              </option>
             ))}
           </select>
         </div>

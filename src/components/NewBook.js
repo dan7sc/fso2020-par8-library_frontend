@@ -4,7 +4,7 @@ import { CREATE_BOOK, ALL_AUTHORS, ALL_BOOKS, BOOK_ADDED } from '../queries'
 import ErrorNotification from './ErrorNotification'
 import Notification from './Notification'
 
-const NewBook = (props) => {
+const NewBook = ({ show, client }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [published, setPublished] = useState('')
@@ -13,15 +13,43 @@ const NewBook = (props) => {
   const [error, setError] = useState(null)
   const [bookAdded, setBookAdded] = useState(null)
 
+  const updateCacheWith = (addedBook) => {
+    const includeIn = (set, object) => (
+      set.map(book => book.id).includes(object.id)
+    )
+
+    const dataInStore = client.readQuery({
+      query: ALL_BOOKS
+    }, {
+      query: ALL_AUTHORS
+    })
+    if (!includeIn(dataInStore.allBooks, addedBook)) {
+      client.writeQuery({
+        query: ALL_BOOKS,
+        data: {
+          allBooks: dataInStore.allBooks.concat(addedBook)
+        }
+      })
+      client.writeQuery({
+        query: ALL_AUTHORS,
+        data: {
+          allAuthors: dataInStore.allBooks.concat(addedBook.author)
+        }
+      })
+    }
+  }
+
   useSubscription(BOOK_ADDED, {
     onSubscriptionData: ({ subscriptionData }) => {
-      const title = subscriptionData.data.bookAdded.title
-      const author = subscriptionData.data.bookAdded.author.name
-      const message = `Book "${title}" from "${author}" added`
+      const addedBook = subscriptionData.data.bookAdded
+      const title = addedBook.title
+      const author = addedBook.author.name
+      const message = `Book "${title}" from "${author.name}" added`
       setBookAdded(message)
       setTimeout(() => {
         setBookAdded(null)
       }, 5000)
+      updateCacheWith(addedBook)
     }
   })
 
@@ -31,28 +59,10 @@ const NewBook = (props) => {
       setTimeout(() => {
         setError(null)
       }, 5000)
-    },
-    update: (store, response) => {
-      const dataInStore = store.readQuery({ query: ALL_BOOKS })
-      const authorsDataInStore = store.readQuery({ query: ALL_AUTHORS })
-      store.writeQuery({
-        query: ALL_BOOKS,
-        data: {
-          ...dataInStore,
-          allBooks: [ ...dataInStore.allBooks, response.data.addBook ]
-        }
-      })
-      store.writeQuery({
-        query: ALL_AUTHORS,
-        data: {
-          ...authorsDataInStore,
-          allAuthors: [ ...authorsDataInStore.allAuthors, response.data.addBook.author]
-        }
-      })
     }
   })
 
-  if (!props.show) {
+  if (!show) {
     return null
   }
 
