@@ -43,8 +43,7 @@ const NewBook = ({ show, client }) => {
     onSubscriptionData: ({ subscriptionData }) => {
       const addedBook = subscriptionData.data.bookAdded
       const title = addedBook.title
-      const author = addedBook.author.name
-      const message = `Book "${title}" from "${author.name}" added`
+      const message = `Book "${title}" added`
       setBookAdded(message)
       setTimeout(() => {
         setBookAdded(null)
