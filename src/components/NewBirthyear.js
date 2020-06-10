@@ -63,9 +63,10 @@ const NewBirthyear = ({ authors }) => {
               -- Please choose an option --
             </option>
             {authors.map(author => (
-              <option key={author.name} value={author.name}>
-                {author.name}
-              </option>
+              author ?
+                <option key={author.name} value={author.name}>
+                  {author.name}
+                </option> : null
             ))}
           </select>
         </div>

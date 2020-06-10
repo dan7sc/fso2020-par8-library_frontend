@@ -36,11 +36,12 @@ const Authors = ({ show, token }) => {
             </th>
           </tr>
           {authors.map(author => (
-            <tr key={author.name}>
-              <td>{author.name}</td>
-              <td>{author.born}</td>
-              <td>{author.bookCount}</td>
-            </tr>
+            author ?
+              <tr key={author.name}>
+                <td>{author.name}</td>
+                <td>{author.born}</td>
+                <td>{author.bookCount}</td>
+              </tr> : null
           ))}
         </tbody>
       </table>
