@@ -30,7 +30,7 @@ const LoginForm = ({ show, setToken, setPage }) => {
     return null
   }
 
-  const submit = async (event) => {
+  const submit = (event) => {
     event.preventDefault()
 
     const credentials = { username, password }
